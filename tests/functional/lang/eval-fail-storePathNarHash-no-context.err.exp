@@ -1,0 +1,10 @@
+error:
+       … while calling the 'storePathNarHash' builtin
+         at /pwd/lang/eval-fail-storePathNarHash-no-context.nix:1:1:
+            1| builtins.storePathNarHash "/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-x"
+             | ^
+            2|
+
+       … while evaluating the argument passed to 'builtins.storePathNarHash'
+
+       error: string '/nix/store/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-x' has 0 entries in its context. It should only have exactly one entry

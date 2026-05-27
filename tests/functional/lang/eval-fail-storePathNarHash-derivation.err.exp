@@ -1,0 +1,9 @@
+error:
+       … while calling the 'storePathNarHash' builtin
+         at /pwd/lang/eval-fail-storePathNarHash-derivation.nix:8:1:
+            7| in
+            8| builtins.storePathNarHash drv.outPath
+             | ^
+            9|
+
+       error: 'builtins.storePathNarHash' requires a string whose context refers to an opaque store path, not a derivation output

@@ -2001,6 +2001,46 @@ static RegisterPrimOp primop_storePath({
     .impl = prim_storePath,
 });
 
+static void prim_storePathNarHash(EvalState & state, const PosIdx pos, Value ** args, Value & v)
+{
+    auto derivedPath = state.coerceToSingleDerivedPath(
+        pos, *args[0], "while evaluating the argument passed to 'builtins.storePathNarHash'");
+
+    auto * opaque = std::get_if<SingleDerivedPath::Opaque>(&derivedPath.raw());
+    if (!opaque)
+        state
+            .error<EvalError>(
+                "'builtins.storePathNarHash' requires a string whose context refers to "
+                "an opaque store path, not a derivation output")
+            .atPos(pos)
+            .debugThrow();
+
+    auto info = state.store->queryPathInfo(opaque->path);
+    v.mkString(info->narHash.to_string(HashFormat::SRI, true), state.mem);
+}
+
+static RegisterPrimOp primop_storePathNarHash({
+    .name = "__storePathNarHash",
+    .args = {"path"},
+    .doc = R"(
+      Return the NAR hash of the store path referred to by *path*, in
+      [SRI](https://www.w3.org/TR/SRI/) format
+      (e.g. `"sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="`).
+
+      *path* must be a string whose [string context](@docroot@/language/string-context.md)
+      contains exactly one entry, and that entry must be an opaque store-path
+      reference — for example a value produced by [`builtins.path`](#builtins-path),
+      [`builtins.toFile`](#builtins-toFile), [`builtins.fetchurl`](#builtins-fetchurl),
+      [`builtins.fetchTree`](#builtins-fetchTree), or [`builtins.storePath`](#builtins-storePath).
+
+      Strings referring to derivation outputs are not accepted, because their
+      NAR hash is only defined after the derivation is built.
+
+      Allowed in [pure evaluation mode](@docroot@/command-ref/conf-file.md#conf-pure-eval).
+    )",
+    .impl = prim_storePathNarHash,
+});
+
 static void prim_pathExists(EvalState & state, const PosIdx pos, Value ** args, Value & v)
 {
     try {
