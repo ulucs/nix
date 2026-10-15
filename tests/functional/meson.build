@@ -164,6 +164,7 @@ suites = [
       'repair.sh',
       'repl.sh',
       'restricted.sh',
+      'sandbox-many-inputs.sh',
       'search.sh',
       'secure-drv-outputs.sh',
       'selfref-gc.sh',
